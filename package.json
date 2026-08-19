@@ -1,0 +1,31 @@
+{
+  "name": "n1app-demo",
+  "private": true,
+  "version": "1.21.1-demo",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5273"
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "primeflex": "^4.0.0",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.7",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-json-view-lite": "^2.4.1",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.9.1",
+    "react-window": "^2.0.2",
+    "remark-gfm": "^4.0.1",
+    "styled-components": "^6.1.19",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "prop-types": "^15.8.1",
+    "vite": "^6.2.0"
+  }
+}
