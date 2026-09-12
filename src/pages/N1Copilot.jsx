@@ -1014,6 +1014,25 @@ function formatRelative(ts) {
   return `Há ${d}d`;
 }
 
+/**
+ * Rola até o fim o painel rolável que contém a âncora.
+ *
+ * `scrollIntoView()` sobe a cadeia inteira de ancestrais até o topo do
+ * documento — e, quando o app está embutido num iframe (o portfólio embute
+ * esta demo), o navegador rola também a página de fora para trazer o iframe
+ * à vista. A pessoa vê a tela saltar sozinha. Aqui a rolagem fica presa ao
+ * painel que a originou.
+ */
+function scrollPanelToEnd(anchor) {
+  for (let el = anchor?.parentElement; el; el = el.parentElement) {
+    const { overflowY } = getComputedStyle(el);
+    if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {
+      el.scrollTop = el.scrollHeight;
+      return;
+    }
+  }
+}
+
 // ---------- component ----------
 export default function N1Copilot() {
   const { darkMode } = useDarkMode();
@@ -1069,17 +1088,19 @@ export default function N1Copilot() {
   }, []);
 
   useEffect(() => {
-    textareaRef.current?.focus();
+    // `preventScroll`: dar foco ao campo não pode arrastar a página junto —
+    // embutido num iframe, isso rolaria também o documento de fora.
+    textareaRef.current?.focus({ preventScroll: true });
     return () => clearStateTimers();
   }, []);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollPanelToEnd(messagesEndRef.current);
   }, [session.messages, isTyping, docPhase, docLogs]);
 
 
   useEffect(() => {
-    docLogEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollPanelToEnd(docLogEndRef.current);
   }, [docLogs]);
 
   useEffect(() => {
@@ -1110,7 +1131,7 @@ export default function N1Copilot() {
     setInputValue('');
     setIsTyping(false);
     navigate('/copilot', { replace: true });
-    setTimeout(() => textareaRef.current?.focus(), 50);
+    setTimeout(() => textareaRef.current?.focus({ preventScroll: true }), 50);
   }, [resetDocState, navigate]);
 
   const loadSession = useCallback((chat) => {
@@ -1119,7 +1140,7 @@ export default function N1Copilot() {
     setSession(chat);
     setInputValue('');
     setIsTyping(false);
-    setTimeout(() => textareaRef.current?.focus(), 50);
+    setTimeout(() => textareaRef.current?.focus({ preventScroll: true }), 50);
   }, [resetDocState]);
 
   const removeChatFromHistory = useCallback((e, chatId) => {
